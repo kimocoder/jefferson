@@ -71,11 +71,7 @@ class Jffs2_unknown_node(cstruct.CStruct):
         cstruct.CStruct.unpack(self, data[:self.size])
         comp_hrd_crc = mtd_crc(data[:self.size - 4])
 
-        if comp_hrd_crc == self.hdr_crc:
-            self.hdr_crc_match = True
-        else:
-            #print 'hdr_crc does not match!'
-            self.hdr_crc_match = False
+        self.hdr_crc_match = comp_hrd_crc == self.hdr_crc
 
 
 class Jffs2_raw_xattr(cstruct.CStruct):
@@ -163,10 +159,11 @@ class Jffs2_raw_dirent(cstruct.CStruct):
             self.name_crc_match = False
 
     def __str__(self):
-        result = []
-        for field in self.__fields__ + ['name', 'node_offset']:
-            result.append(field + "=" + str(getattr(self, field, None)))
-        return type(self).__name__ + "(" + ", ".join(result) + ")"
+        result = [
+            f"{field}={str(getattr(self, field, None))}"
+            for field in self.__fields__ + ['name', 'node_offset']
+        ]
+        return f"{type(self).__name__}(" + ", ".join(result) + ")"
 
 
 class Jffs2_raw_inode(cstruct.CStruct):

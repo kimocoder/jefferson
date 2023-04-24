@@ -17,5 +17,4 @@ DICT_SIZE = 0x2000
 def decompress(data, outlen):
     lzma_header = struct.pack('<BIQ', PROPERTIES, DICT_SIZE, outlen)
     lzma_data = lzma_header + data
-    decompressed = lzma.decompress(lzma_data)
-    return decompressed
+    return lzma.decompress(lzma_data)
